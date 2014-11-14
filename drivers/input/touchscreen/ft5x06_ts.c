@@ -47,7 +47,7 @@
 #define FT_SUSPEND_LEVEL 1
 #endif
 
-<<<<<<< HEAD
+
 #if defined(CONFIG_FT_SECURE_TOUCH)
 #include <linux/completion.h>
 #include <linux/atomic.h>
@@ -127,7 +127,7 @@ static unsigned char firmware_data_ofilm[] = {
 
 #ifdef FTS_SCAP_TEST
 #include "ft5x06_mcap_test_lib.h"
->>>>>>> a121b24... wake_gestures: add sweep2wake, doubletap2wake and sweep2sleep for Redmi Note 3
+
 #endif
 
 #define FT_DRIVER_VERSION	0x02
@@ -382,7 +382,7 @@ static irqreturn_t ft5x06_filter_interrupt(struct ft5x06_ts_data *data)
 	return IRQ_NONE;
 }
 
-<<<<<<< HEAD
+
 static void ft5x06_secure_touch_stop(struct ft5x06_ts_data *data, int blocking)
 {
 	if (atomic_read(&data->st_enabled)) {
@@ -413,7 +413,7 @@ bool scr_suspended_ft(void) {
 #endif
 
 extern int is_tp_driver_loaded;
->>>>>>> a121b24... wake_gestures: add sweep2wake, doubletap2wake and sweep2sleep for Redmi Note 3
+
 
 static inline bool ft5x06_gesture_support_enabled(void)
 {
@@ -1110,7 +1110,7 @@ err_gpio_configuration:
 		if (err < 0)
 			dev_err(dev, "Cannot get suspend pinctrl state\n");
 	}
-<<<<<<< HEAD
+
 	if (data->pdata->power_on) {
 		err = data->pdata->power_on(false);
 		if (err)
@@ -1124,7 +1124,7 @@ err_gpio_configuration:
 	if (data->loading_fw) {
 		dev_info(dev, "Firmware loading in process...\n");
 		return 0;
->>>>>>> a121b24... wake_gestures: add sweep2wake, doubletap2wake and sweep2sleep for Redmi Note 3
+
 	}
 	return err;
 }
@@ -1232,7 +1232,7 @@ static int ft5x06_ts_suspend(struct device *dev)
 		return 0;
 	}
 
-<<<<<<< HEAD
+
 	if (data->suspended) {
 		dev_info(dev, "Already in suspend state\n");
 		return 0;
@@ -1270,7 +1270,7 @@ static int ft5x06_ts_suspend(struct device *dev)
 
 	if (gpio_is_valid(data->pdata->reset_gpio)) {
 		gpio_set_value_cansleep(data->pdata->reset_gpio, 0);
->>>>>>> a121b24... wake_gestures: add sweep2wake, doubletap2wake and sweep2sleep for Redmi Note 3
+
 
 	ft5x06_secure_touch_stop(data, 1);
 

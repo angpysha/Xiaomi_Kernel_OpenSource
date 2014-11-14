@@ -91,7 +91,7 @@ obj-$(CONFIG_TOUCHSCREEN_SYNAPTICS_I2C_RMI4)		+= synaptics_i2c_rmi4.o
 obj-$(CONFIG_TOUCHSCREEN_SYNAPTICS_DSX_RMI4_DEV)	+= synaptics_rmi_dev.o
 obj-$(CONFIG_TOUCHSCREEN_SYNAPTICS_DSX_FW_UPDATE) 	+= synaptics_fw_update.o
 obj-$(CONFIG_TOUCHSCREEN_GT9XX)		+= gt9xx/
-<<<<<<< HEAD
+
 obj-$(CONFIG_TOUCHSCREEN_FT5336)	+= FT5336/
 obj-$(CONFIG_TOUCHSCREEN_IST30XX)	+= IST30xx/
 =======
@@ -104,4 +104,4 @@ obj-y	+= lct_ctp_selftest.o
 obj-y	+= lct_ctp_upgrade.o
 obj-y	+= lct_if_ctp_upgrade.o
 obj-$(CONFIG_TOUCHSCREEN_GESTURE)	+= lct_ctp_gesture.o
->>>>>>> a121b24... wake_gestures: add sweep2wake, doubletap2wake and sweep2sleep for Redmi Note 3
+
