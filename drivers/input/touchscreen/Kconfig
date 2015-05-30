@@ -1136,11 +1136,8 @@ config TOUCHSCREEN_IST30XX
 	bool "IMAGES touchpanel IST30XX series"
 	depends on I2C
 
-<<<<<<< HEAD
 source "drivers/input/touchscreen/IST30xx/Kconfig"
 =======
 config WAKE_GESTURES
 	bool "wake gestures"
-
->>>>>>> a121b24... wake_gestures: add sweep2wake, doubletap2wake and sweep2sleep for Redmi Note 3
 endif
