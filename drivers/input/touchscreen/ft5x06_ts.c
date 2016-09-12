@@ -47,10 +47,87 @@
 #define FT_SUSPEND_LEVEL 1
 #endif
 
+<<<<<<< HEAD
 #if defined(CONFIG_FT_SECURE_TOUCH)
 #include <linux/completion.h>
 #include <linux/atomic.h>
 #include <linux/pm_runtime.h>
+=======
+#ifdef CONFIG_WAKE_GESTURES
+#include <linux/wake_gestures.h>
+#endif
+
+#if defined(CONFIG_TOUCHSCREEN_GESTURE)
+#endif
+
+#define FT_PROC_DEBUG
+#if defined(FT_PROC_DEBUG)
+#include <linux/proc_fs.h>
+#define FTS_FACTORYMODE_VALUE		0x40
+#define FTS_WORKMODE_VALUE		0x00
+#endif
+#define TP_CHIPER_ID			0x54
+
+#ifdef FT_GESTURE
+#define GESTURE_LEFT			0x20
+#define GESTURE_RIGHT		0x21
+#define GESTURE_UP		    	0x22
+#define GESTURE_DOWN		0x23
+#define GESTURE_DOUBLECLICK	0x24
+#define GESTURE_O		    	0x30
+#define GESTURE_W		    	0x31
+#define GESTURE_M		    	0x32
+#define GESTURE_E		    	0x33
+#define GESTURE_C		    	0x34
+#define GESTURE_S		    	0x46
+#define GESTURE_V		    	0x54
+#define GESTURE_Z		    	0x65
+
+#define FTS_GESTRUE_POINTS 				255
+#define FTS_GESTRUE_POINTS_ONETIME  	62
+#define FTS_GESTRUE_POINTS_HEADER 		8
+#define FTS_GESTURE_OUTPUT_ADRESS 		0xD3
+#define FTS_GESTURE_OUTPUT_UNIT_LENGTH 	4
+
+unsigned short coordinate_x[150] = {0};
+unsigned short coordinate_y[150] = {0};
+#endif
+
+#if defined(CONFIG_TOUCHSCREEN_GESTURE)
+extern int ctp_get_gesture_data(void);
+extern void ctp_set_gesture_data(int value);
+#endif
+
+#define CTP_PROC_LOCKDOWN_FILE "tp_lockdown_info"
+char tp_lockdown_info[128];
+u8 uc_tp_vendor_id;
+
+#define FT_CHARGING_STATUS
+
+#if defined(FT_CHARGING_STATUS)
+int charging_flag = 0;
+extern int FG_charger_status;
+#endif
+
+static struct i2c_client *fts_proc_entry_i2c_client;
+
+static unsigned char firmware_data[] = {
+#include "FT5346_LQ_CX865_Biel0x3b_V20_D01_20151023_app.i"
+};
+static unsigned char firmware_data_biel[] = {
+#include "FT5346_LQ_CX865_Biel0x3b_V20_D01_20151023_app.i"
+};
+static unsigned char firmware_data_mutton[] = {
+#include "FT5346_LQ_CX865_Mutton0x53_Sharp_Black_V11_D01_20151022_app.i"
+};
+static unsigned char firmware_data_ofilm[] = {
+#include "FT5346_LQ_L8650_Ofilm0x51_V02_D01_20151228_app.i"
+};
+
+
+#ifdef FTS_SCAP_TEST
+#include "ft5x06_mcap_test_lib.h"
+>>>>>>> a121b24... wake_gestures: add sweep2wake, doubletap2wake and sweep2sleep for Redmi Note 3
 #endif
 
 #define FT_DRIVER_VERSION	0x02
@@ -305,6 +382,7 @@ static irqreturn_t ft5x06_filter_interrupt(struct ft5x06_ts_data *data)
 	return IRQ_NONE;
 }
 
+<<<<<<< HEAD
 static void ft5x06_secure_touch_stop(struct ft5x06_ts_data *data, int blocking)
 {
 	if (atomic_read(&data->st_enabled)) {
@@ -327,6 +405,15 @@ static void ft5x06_secure_touch_stop(struct ft5x06_ts_data *data, int blocking)
 {
 }
 #endif
+=======
+#ifdef CONFIG_WAKE_GESTURES
+bool scr_suspended_ft(void) {
+	return ft5x06_ts->suspended;
+}
+#endif
+
+extern int is_tp_driver_loaded;
+>>>>>>> a121b24... wake_gestures: add sweep2wake, doubletap2wake and sweep2sleep for Redmi Note 3
 
 static inline bool ft5x06_gesture_support_enabled(void)
 {
@@ -707,6 +794,11 @@ static irqreturn_t ft5x06_ts_interrupt(int irq, void *dev_id)
 		if (!num_touches && !status && !id)
 			break;
 
+#ifdef CONFIG_WAKE_GESTURES
+		if (data->suspended)
+			x += 5000;
+#endif
+
 		input_mt_slot(ip_dev, id);
 		if (status == FT_TOUCH_DOWN || status == FT_TOUCH_CONTACT) {
 			input_mt_report_slot_state(ip_dev, MT_TOOL_FINGER, 1);
@@ -1018,6 +1110,7 @@ err_gpio_configuration:
 		if (err < 0)
 			dev_err(dev, "Cannot get suspend pinctrl state\n");
 	}
+<<<<<<< HEAD
 	if (data->pdata->power_on) {
 		err = data->pdata->power_on(false);
 		if (err)
@@ -1026,6 +1119,12 @@ err_gpio_configuration:
 		err = ft5x06_power_on(data, false);
 		if (err)
 			dev_err(dev, "power off failed");
+=======
+#endif
+	if (data->loading_fw) {
+		dev_info(dev, "Firmware loading in process...\n");
+		return 0;
+>>>>>>> a121b24... wake_gestures: add sweep2wake, doubletap2wake and sweep2sleep for Redmi Note 3
 	}
 	return err;
 }
@@ -1035,6 +1134,19 @@ static int ft5x06_ts_stop(struct device *dev)
 	struct ft5x06_ts_data *data = dev_get_drvdata(dev);
 	char txbuf[2];
 	int i, err;
+
+#ifdef CONFIG_WAKE_GESTURES
+	if (device_may_wakeup(dev) && (s2w_switch || dt2w_switch)) {
+		ft5x0x_write_reg(data->client, 0xD0, 1);
+		err = enable_irq_wake(data->client->irq);
+		if (err)
+			dev_err(&data->client->dev,
+				"%s: set_irq_wake failed\n", __func__);
+		data->suspended = true;
+
+		return err;
+	}
+#endif
 
 	disable_irq(data->client->irq);
 
@@ -1120,10 +1232,45 @@ static int ft5x06_ts_suspend(struct device *dev)
 		return 0;
 	}
 
+<<<<<<< HEAD
 	if (data->suspended) {
 		dev_info(dev, "Already in suspend state\n");
 		return 0;
 	}
+=======
+#ifdef CONFIG_WAKE_GESTURES
+	if (device_may_wakeup(dev) && (s2w_switch || dt2w_switch)) {
+		ft5x0x_write_reg(data->client, 0xD0, 0);
+
+		for (i = 0; i < data->pdata->num_max_touches; i++) {
+			input_mt_slot(data->input_dev, i);
+			input_mt_report_slot_state(data->input_dev, MT_TOOL_FINGER, 0);
+		}
+		input_mt_report_pointer_emulation(data->input_dev, false);
+		input_sync(data->input_dev);
+
+		err = disable_irq_wake(data->client->irq);
+		if (err)
+			dev_err(dev, "%s: disable_irq_wake failed\n",
+				__func__);
+		data->suspended = false;
+
+		if (dt2w_switch_changed) {
+			dt2w_switch = dt2w_switch_temp;
+			dt2w_switch_changed = false;
+		}
+		if (s2w_switch_changed) {
+			s2w_switch = s2w_switch_temp;
+			s2w_switch_changed = false;
+		}
+
+		return err;
+	}
+#endif
+
+	if (gpio_is_valid(data->pdata->reset_gpio)) {
+		gpio_set_value_cansleep(data->pdata->reset_gpio, 0);
+>>>>>>> a121b24... wake_gestures: add sweep2wake, doubletap2wake and sweep2sleep for Redmi Note 3
 
 	ft5x06_secure_touch_stop(data, 1);
 
@@ -2267,6 +2414,10 @@ static int ft5x06_ts_probe(struct i2c_client *client,
 			goto free_enable_sys;
 		}
 	}
+
+#ifdef CONFIG_WAKE_GESTURES
+	device_init_wakeup(&client->dev, 1);
+#endif
 
 	err = device_create_file(&client->dev, &dev_attr_fw_name);
 	if (err) {
