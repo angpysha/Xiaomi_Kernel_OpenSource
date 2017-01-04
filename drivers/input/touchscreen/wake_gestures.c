@@ -489,6 +489,10 @@ static int input_dev_filter(struct input_dev *dev) {
 		return 0;
 	}else if (strstr(dev->name, "IST30xx")) {
 		return 0;
+	} else if (strstr(dev->name, "ist30xx")) {
+		return 0;
+	} else if (strstr(dev->name, "ist30xxc")) {
+		return 0;
 	} else {
 		return 1;
 	}
