@@ -604,7 +604,7 @@ void arch_setup_pdev_archdata(struct platform_device *pdev)
 
 
 static int __init dumphardboot(void) {
-	unsigned long *h = ioremap(0x84900000, SZ_1M);
+	unsigned long *h = ioremap(0x84800000, SZ_1M);
 	pr_info("Hardboot: %lx %lx %lx %lx %lx %lx %lx %lx\n",
 		h[0], h[1], h[2], h[3], h[4], h[5], h[6], h[7]);
 	iounmap(h);
