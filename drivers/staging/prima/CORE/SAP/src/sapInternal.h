@@ -98,7 +98,7 @@ when           who        what, where, why
 #define WLANSAP_SECURITY_ENABLED_STATE VOS_TRUE
 // How do I get SAP context from voss context? 
 #define VOS_GET_SAP_CB(ctx) vos_get_context( VOS_MODULE_ID_SAP, ctx) 
-
+#undef VOS_GET_HAL_CB
 #define VOS_GET_HAL_CB(ctx) vos_get_context( VOS_MODULE_ID_PE, ctx) 
 //MAC Address length
 #define ANI_EAPOL_KEY_RSN_NONCE_SIZE      32

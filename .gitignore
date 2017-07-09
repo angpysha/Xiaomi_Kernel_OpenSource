@@ -25,6 +25,7 @@
 *.elf
 *.bin
 *.gz
+*.gz-dtb
 *.bz2
 *.lzma
 *.xz
